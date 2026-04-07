@@ -1,342 +1,804 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coliving Budget Calculator</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;min-height:100vh;padding:24px 16px;color:#1a1a1a}
-.wrap{max-width:640px;margin:0 auto}
-h1{font-size:13px;font-weight:500;color:#888;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:24px;text-align:center}
-.card{background:#fff;border:1px solid #e8e6e0;border-radius:14px;padding:20px;margin-bottom:12px}
-.sec-title{font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #f0ede8}
-.field{margin-bottom:14px}
-.field:last-child{margin-bottom:0}
-.lbl{font-size:12px;color:#666;margin-bottom:5px;display:flex;justify-content:space-between}
-.lbl span{font-weight:500;color:#1a1a1a}
-input[type=range]{width:100%;accent-color:#1D9E75;margin:4px 0}
-.hint{font-size:10px;color:#aaa;display:flex;justify-content:space-between;margin-top:2px}
-.city-grid,.style-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.city-btn,.style-btn{padding:10px 12px;border-radius:10px;border:1px solid #e8e6e0;background:#fff;color:#666;font-size:12px;cursor:pointer;text-align:left;width:100%;transition:all 0.12s;font-family:inherit}
-.city-btn.on{border-color:#1D9E75;border-width:2px;background:#E1F5EE;color:#085041}
-.style-btn.on{border-color:#534AB7;border-width:2px;background:#EEEDFE;color:#3C3489}
-.cn{font-size:12px;font-weight:500;margin-bottom:2px;color:inherit}
-.cr{font-size:10px;opacity:0.7;color:inherit}
-.gate{text-align:center;padding:32px 20px}
-.gate-title{font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:8px;line-height:1.3}
-.gate-sub{font-size:14px;color:#666;line-height:1.6;margin-bottom:20px}
-.gate-perks{text-align:left;background:#f5f4f0;border-radius:10px;padding:14px 16px;margin-bottom:20px}
-.perk{font-size:12px;color:#555;line-height:1.6;display:flex;gap:8px;align-items:flex-start;margin-bottom:4px}
-.perk:last-child{margin-bottom:0}
-.perk-dot{width:6px;height:6px;border-radius:50%;background:#1D9E75;flex-shrink:0;margin-top:6px}
-.gate-input{width:100%;font-size:14px;padding:11px 14px;border-radius:10px;border:1px solid #ddd;background:#fff;color:#1a1a1a;margin-bottom:8px;outline:none;font-family:inherit}
-.gate-input:focus{border-color:#1D9E75;border-width:1.5px}
-.gate-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#1D9E75;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity 0.15s}
-.gate-btn:hover{opacity:0.88}
-.gate-btn:disabled{opacity:0.5;cursor:not-allowed}
-.gate-err{font-size:11px;color:#E24B4A;margin-bottom:8px;display:none;text-align:left}
-.gate-ok{font-size:11px;color:#0F6E56;margin-bottom:8px;display:none;text-align:left}
-.gate-note{font-size:11px;color:#aaa;margin-top:10px}
-.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.compare-col{border-radius:10px;padding:12px 14px}
-.compare-label{font-size:10px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;opacity:0.7}
-.compare-city{font-size:14px;font-weight:600;margin-bottom:10px}
-.compare-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.07)}
-.compare-row:last-of-type{border-bottom:none}
-.compare-row-label{opacity:0.7}
-.compare-row-val{font-weight:500}
-.compare-total{margin-top:10px;padding-top:10px;border-top:2px solid rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:baseline}
-.compare-total-label{font-size:11px;opacity:0.7}
-.compare-total-val{font-size:20px;font-weight:600}
-.verdict{border-radius:10px;padding:14px 16px;margin-bottom:14px}
-.verdict-title{font-size:15px;font-weight:600;margin-bottom:4px}
-.verdict-sub{font-size:12px;line-height:1.6}
-.breakdown{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.brow{display:grid;grid-template-columns:1fr 80px 68px;align-items:center;gap:8px}
-.brow-label{font-size:11px;color:#666}
-.brow-bar{height:5px;background:#f0ede8;border-radius:99px;overflow:hidden}
-.brow-fill{height:100%;border-radius:99px}
-.brow-val{font-size:11px;font-weight:500;color:#1a1a1a;text-align:right}
-.totals{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.total-card{background:#f5f4f0;border-radius:10px;padding:10px}
-.total-label{font-size:10px;color:#888;margin-bottom:4px}
-.total-val{font-size:17px;font-weight:600;color:#1a1a1a}
-.total-sub{font-size:10px;color:#888;margin-top:2px}
-.insight-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.insight-item{font-size:12px;line-height:1.55;padding:9px 12px;border-radius:10px;border-left:3px solid transparent}
-.ig{border-left-color:#1D9E75;background:#E1F5EE;color:#085041}
-.ia{border-left-color:#BA7517;background:#FAEEDA;color:#633806}
-.ir{border-left-color:#E24B4A;background:#FCEBEB;color:#A32D2D}
-.cta-box{background:#E1F5EE;border-radius:14px;padding:20px;text-align:center;margin-bottom:12px}
-.cta-title{font-size:15px;font-weight:600;color:#085041;margin-bottom:6px}
-.cta-sub{font-size:12px;color:#0F6E56;margin-bottom:14px;line-height:1.55}
-.cta-btn{display:inline-block;padding:10px 24px;border-radius:10px;border:1.5px solid #1D9E75;color:#085041;font-size:13px;font-weight:500;cursor:pointer;background:transparent;transition:all 0.15s;font-family:inherit}
-.cta-btn:hover{background:#1D9E75;color:#fff}
-.footer{text-align:center;font-size:11px;color:#bbb;padding:8px 0 16px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coliving Budget Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f4f0;
+      min-height: 100vh;
+      padding: 24px 16px;
+      color: #1a1a1a
+    }
+
+    .wrap {
+      max-width: 640px;
+      margin: 0 auto
+    }
+
+    h1 {
+      font-size: 13px;
+      font-weight: 500;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      text-align: center
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e8e6e0;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 12px
+    }
+
+    .sec-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f0ede8
+    }
+
+    .field {
+      margin-bottom: 14px
+    }
+
+    .field:last-child {
+      margin-bottom: 0
+    }
+
+    .lbl {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between
+    }
+
+    .lbl span {
+      font-weight: 500;
+      color: #1a1a1a
+    }
+
+    input[type=range] {
+      width: 100%;
+      accent-color: #1D9E75;
+      margin: 4px 0
+    }
+
+    .hint {
+      font-size: 10px;
+      color: #aaa;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2px
+    }
+
+    .city-grid,
+    .style-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px
+    }
+
+    .city-btn,
+    .style-btn {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #e8e6e0;
+      background: #fff;
+      color: #666;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: all 0.12s;
+      font-family: inherit
+    }
+
+    .city-btn.on {
+      border-color: #1D9E75;
+      border-width: 2px;
+      background: #E1F5EE;
+      color: #085041
+    }
+
+    .style-btn.on {
+      border-color: #534AB7;
+      border-width: 2px;
+      background: #EEEDFE;
+      color: #3C3489
+    }
+
+    .cn {
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      color: inherit
+    }
+
+    .cr {
+      font-size: 10px;
+      opacity: 0.7;
+      color: inherit
+    }
+
+    .gate {
+      text-align: center;
+      padding: 32px 20px
+    }
+
+    .gate-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+      line-height: 1.3
+    }
+
+    .gate-sub {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 20px
+    }
+
+    .gate-perks {
+      text-align: left;
+      background: #f5f4f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 20px
+    }
+
+    .perk {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.6;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 4px
+    }
+
+    .perk:last-child {
+      margin-bottom: 0
+    }
+
+    .perk-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #1D9E75;
+      flex-shrink: 0;
+      margin-top: 6px
+    }
+
+    .gate-input {
+      width: 100%;
+      font-size: 14px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background: #fff;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+      outline: none;
+      font-family: inherit
+    }
+
+    .gate-input:focus {
+      border-color: #1D9E75;
+      border-width: 1.5px
+    }
+
+    .gate-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: #1D9E75;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s
+    }
+
+    .gate-btn:hover {
+      opacity: 0.88
+    }
+
+    .gate-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed
+    }
+
+    .gate-err {
+      font-size: 11px;
+      color: #E24B4A;
+      margin-bottom: 8px;
+      display: none;
+      text-align: left
+    }
+
+    .gate-ok {
+      font-size: 11px;
+      color: #0F6E56;
+      margin-bottom: 8px;
+      display: none;
+      text-align: left
+    }
+
+    .gate-note {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 10px
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px
+    }
+
+    .compare-col {
+      border-radius: 10px;
+      padding: 12px 14px
+    }
+
+    .compare-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: 0.7
+    }
+
+    .compare-city {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px
+    }
+
+    .compare-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07)
+    }
+
+    .compare-row:last-of-type {
+      border-bottom: none
+    }
+
+    .compare-row-label {
+      opacity: 0.7
+    }
+
+    .compare-row-val {
+      font-weight: 500
+    }
+
+    .compare-total {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 2px solid rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline
+    }
+
+    .compare-total-label {
+      font-size: 11px;
+      opacity: 0.7
+    }
+
+    .compare-total-val {
+      font-size: 20px;
+      font-weight: 600
+    }
+
+    .verdict {
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 14px
+    }
+
+    .verdict-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px
+    }
+
+    .verdict-sub {
+      font-size: 12px;
+      line-height: 1.6
+    }
+
+    .breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px
+    }
+
+    .brow {
+      display: grid;
+      grid-template-columns: 1fr 80px 68px;
+      align-items: center;
+      gap: 8px
+    }
+
+    .brow-label {
+      font-size: 11px;
+      color: #666
+    }
+
+    .brow-bar {
+      height: 5px;
+      background: #f0ede8;
+      border-radius: 99px;
+      overflow: hidden
+    }
+
+    .brow-fill {
+      height: 100%;
+      border-radius: 99px
+    }
+
+    .brow-val {
+      font-size: 11px;
+      font-weight: 500;
+      color: #1a1a1a;
+      text-align: right
+    }
+
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px
+    }
+
+    .total-card {
+      background: #f5f4f0;
+      border-radius: 10px;
+      padding: 10px
+    }
+
+    .total-label {
+      font-size: 10px;
+      color: #888;
+      margin-bottom: 4px
+    }
+
+    .total-val {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1a1a1a
+    }
+
+    .total-sub {
+      font-size: 10px;
+      color: #888;
+      margin-top: 2px
+    }
+
+    .insight-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px
+    }
+
+    .insight-item {
+      font-size: 12px;
+      line-height: 1.55;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border-left: 3px solid transparent
+    }
+
+    .ig {
+      border-left-color: #1D9E75;
+      background: #E1F5EE;
+      color: #085041
+    }
+
+    .ia {
+      border-left-color: #BA7517;
+      background: #FAEEDA;
+      color: #633806
+    }
+
+    .ir {
+      border-left-color: #E24B4A;
+      background: #FCEBEB;
+      color: #A32D2D
+    }
+
+    .cta-box {
+      background: #E1F5EE;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 12px
+    }
+
+    .cta-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #085041;
+      margin-bottom: 6px
+    }
+
+    .cta-sub {
+      font-size: 12px;
+      color: #0F6E56;
+      margin-bottom: 14px;
+      line-height: 1.55
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 10px 24px;
+      border-radius: 10px;
+      border: 1.5px solid #1D9E75;
+      color: #085041;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.15s;
+      font-family: inherit
+    }
+
+    .cta-btn:hover {
+      background: #1D9E75;
+      color: #fff
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #bbb;
+      padding: 8px 0 16px
+    }
+  </style>
 </head>
+
 <body>
-<div class="wrap">
-<h1>Coliving Budget Calculator</h1>
+  <div class="wrap">
+    <h1>Coliving Budget Calculator</h1>
 
-<!-- GATE -->
-<div class="card" id="gate">
-  <div class="gate">
-    <div class="gate-title">Can you actually afford<br>coliving on your income?</div>
-    <div class="gate-sub">Enter your income and current living costs — we'll show you exactly whether Bali, Chiang Mai, Da Nang, or Rio is cheaper than where you live now.</div>
-    <div class="gate-perks">
-      <div class="perk"><div class="perk-dot"></div><span>Budget recommendation based on your actual income</span></div>
-      <div class="perk"><div class="perk-dot"></div><span>Your current living costs vs. coliving — side by side</span></div>
-      <div class="perk"><div class="perk-dot"></div><span>Hidden costs included (visa, transport, extras)</span></div>
-      <div class="perk"><div class="perk-dot"></div><span>Savings calculation for your exact stay length</span></div>
+    <!-- GATE -->
+    <div class="card" id="gate">
+      <div class="gate">
+        <div class="gate-title">Can you actually afford<br>coliving on your income?</div>
+        <div class="gate-sub">Enter your income and current living costs — we'll show you exactly whether Bali, Chiang
+          Mai, Da Nang, or Rio is cheaper than where you live now.</div>
+        <div class="gate-perks">
+          <div class="perk">
+            <div class="perk-dot"></div><span>Budget recommendation based on your actual income</span>
+          </div>
+          <div class="perk">
+            <div class="perk-dot"></div><span>Your current living costs vs. coliving — side by side</span>
+          </div>
+          <div class="perk">
+            <div class="perk-dot"></div><span>Hidden costs included (visa, transport, extras)</span>
+          </div>
+          <div class="perk">
+            <div class="perk-dot"></div><span>Savings calculation for your exact stay length</span>
+          </div>
+        </div>
+        <input class="gate-input" type="email" id="email-input" placeholder="Enter your email to access the calculator"
+          oninput="clearMsg()">
+        <div class="gate-err" id="gate-err">Please enter a valid email address.</div>
+        <div class="gate-ok" id="gate-ok">✓ You're in! Opening the calculator...</div>
+        <button class="gate-btn" id="gate-btn" onclick="submitGate()">Calculate for free</button>
+        <div class="gate-note">No spam. Unsubscribe anytime.</div>
+      </div>
     </div>
-    <input class="gate-input" type="email" id="email-input" placeholder="Enter your email to access the calculator" oninput="clearMsg()">
-    <div class="gate-err" id="gate-err">Please enter a valid email address.</div>
-    <div class="gate-ok" id="gate-ok">✓ You're in! Opening the calculator...</div>
-    <button class="gate-btn" id="gate-btn" onclick="submitGate()">Calculate for free</button>
-    <div class="gate-note">No spam. Unsubscribe anytime.</div>
+
+    <!-- CALCULATOR -->
+    <div id="calc" style="display:none">
+
+      <div class="card">
+        <div class="sec-title">Your income & current costs</div>
+        <div class="field">
+          <div class="lbl">Annual income (USD)<span id="income-val">$50,000</span></div>
+          <input type="range" id="income" min="20000" max="200000" step="5000" value="50000" oninput="update()">
+          <div class="hint"><span>$20k</span><span id="monthly-lbl" style="color:#1D9E75"></span><span>$200k</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="lbl">Current monthly expenses (USD)<span id="living-val">$1,500</span></div>
+          <input type="range" id="living" min="500" max="5000" step="100" value="1500" oninput="update()">
+          <div class="hint"><span>$500</span><span style="color:#aaa">rent + food + transport +
+              everything</span><span>$5,000</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-title">Length of stay</div>
+        <div class="field">
+          <div class="lbl">How long are you planning to stay?<span id="duration-val">4 weeks</span></div>
+          <input type="range" id="duration" min="1" max="24" step="1" value="4" oninput="update()">
+          <div class="hint"><span>1 week</span><span></span><span>24 weeks (6 months)</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-title">Choose your destination</div>
+        <div class="city-grid">
+          <button class="city-btn on" data-city="0" onclick="selCity(0)">
+            <div class="cn">Bali, Indonesia</div>
+            <div class="cr">Coliving $600–1,400/mo · Visa required</div>
+          </button>
+          <button class="city-btn" data-city="1" onclick="selCity(1)">
+            <div class="cn">Chiang Mai, Thailand</div>
+            <div class="cr">Coliving $400–900/mo · Visa-free 30 days</div>
+          </button>
+          <button class="city-btn" data-city="2" onclick="selCity(2)">
+            <div class="cn">Da Nang, Vietnam</div>
+            <div class="cr">Coliving $350–800/mo · Visa-free 45 days</div>
+          </button>
+          <button class="city-btn" data-city="3" onclick="selCity(3)">
+            <div class="cn">Rio de Janeiro, Brazil</div>
+            <div class="cr">Coliving $700–1,500/mo · Visa-free 90 days</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-title">Coliving style</div>
+        <div class="style-grid">
+          <button class="style-btn on" data-style="0" onclick="selStyle(0)">
+            <div class="cn">Balanced</div>
+            <div class="cr">Community + focus, best of both</div>
+          </button>
+          <button class="style-btn" data-style="1" onclick="selStyle(1)">
+            <div class="cn">Social</div>
+            <div class="cr">Events-heavy, vibrant community</div>
+          </button>
+          <button class="style-btn" data-style="2" onclick="selStyle(2)">
+            <div class="cn">Focus</div>
+            <div class="cr">Quiet, deep work optimized</div>
+          </button>
+          <button class="style-btn" data-style="3" onclick="selStyle(3)">
+            <div class="cn">Premium</div>
+            <div class="cr">Top-tier facilities, full service</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="card" id="results">
+        <div class="sec-title">Your cost comparison</div>
+        <div class="compare-grid" id="compare-grid"></div>
+        <div class="verdict" id="verdict-box">
+          <div class="verdict-title" id="verdict-title"></div>
+          <div class="verdict-sub" id="verdict-sub"></div>
+        </div>
+        <div
+          style="font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">
+          Monthly coliving cost breakdown</div>
+        <div class="breakdown" id="breakdown"></div>
+        <div class="totals">
+          <div class="total-card">
+            <div class="total-label">Monthly coliving cost</div>
+            <div class="total-val" id="t-monthly"></div>
+            <div class="total-sub" id="t-monthly-sub"></div>
+          </div>
+          <div class="total-card">
+            <div class="total-label">Total for stay</div>
+            <div class="total-val" id="t-total"></div>
+            <div class="total-sub" id="t-total-sub"></div>
+          </div>
+          <div class="total-card">
+            <div class="total-label">vs. current life</div>
+            <div class="total-val" id="t-ratio"></div>
+            <div class="total-sub" id="t-ratio-sub"></div>
+          </div>
+        </div>
+        <div class="insight-list" id="insights"></div>
+      </div>
+
+      <div class="cta-box">
+        <div class="cta-title">Want me to find the right coliving<br>for this exact budget?</div>
+        <div class="cta-sub">I hand-pick 2–3 vetted coliving spaces based on your budget, style, and visa situation.
+          Free consultation — no strings attached.</div>
+        <button class="cta-btn" onclick="window.open('https://instagram.com/chico_doyoon','_blank')">Book a free
+          consultation →</button>
+      </div>
+
+      <div class="footer">made with ♥ by a vetted coliving curator</div>
+    </div>
   </div>
-</div>
 
-<!-- CALCULATOR -->
-<div id="calc" style="display:none">
+  <script>
+    var MAILCHIMP_SERVER = 'us12';
+    var MAILCHIMP_LIST_ID = 'b2de77e78a';
+    var MAILCHIMP_API_KEY = 'acla000d541439dfae8ac98fd45cf3c1-us12';
 
-  <div class="card">
-    <div class="sec-title">Your income & current costs</div>
-    <div class="field">
-      <div class="lbl">Annual income (USD)<span id="income-val">$50,000</span></div>
-      <input type="range" id="income" min="20000" max="200000" step="5000" value="50000" oninput="update()">
-      <div class="hint"><span>$20k</span><span id="monthly-lbl" style="color:#1D9E75"></span><span>$200k</span></div>
-    </div>
-    <div class="field">
-      <div class="lbl">Current monthly expenses (USD)<span id="living-val">$1,500</span></div>
-      <input type="range" id="living" min="500" max="5000" step="100" value="1500" oninput="update()">
-      <div class="hint"><span>$500</span><span style="color:#aaa">rent + food + transport + everything</span><span>$5,000</span></div>
-    </div>
-  </div>
+    var cities = [
+      { name: "Bali", flag: "🇮🇩", coliving: [750, 950, 620, 1300], food: 320, transport: 75, visa: 70, misc: 90, hiddenPct: 0.13 },
+      { name: "Chiang Mai", flag: "🇹🇭", coliving: [480, 650, 400, 850], food: 230, transport: 45, visa: 40, misc: 70, hiddenPct: 0.12 },
+      { name: "Da Nang", flag: "🇻🇳", coliving: [420, 600, 360, 780], food: 200, transport: 38, visa: 30, misc: 60, hiddenPct: 0.11 },
+      { name: "Rio de Janeiro", flag: "🇧🇷", coliving: [780, 1050, 680, 1400], food: 380, transport: 90, visa: 0, misc: 110, hiddenPct: 0.15 }
+    ];
+    var cityIdx = 0, styleChoice = 0;
 
-  <div class="card">
-    <div class="sec-title">Length of stay</div>
-    <div class="field">
-      <div class="lbl">How long are you planning to stay?<span id="duration-val">4 weeks</span></div>
-      <input type="range" id="duration" min="1" max="24" step="1" value="4" oninput="update()">
-      <div class="hint"><span>1 week</span><span></span><span>24 weeks (6 months)</span></div>
-    </div>
-  </div>
+    function clearMsg() {
+      document.getElementById('gate-err').style.display = 'none';
+      document.getElementById('gate-ok').style.display = 'none';
+    }
 
-  <div class="card">
-    <div class="sec-title">Choose your destination</div>
-    <div class="city-grid">
-      <button class="city-btn on" data-city="0" onclick="selCity(0)"><div class="cn">Bali, Indonesia</div><div class="cr">Coliving $600–1,400/mo · Visa required</div></button>
-      <button class="city-btn" data-city="1" onclick="selCity(1)"><div class="cn">Chiang Mai, Thailand</div><div class="cr">Coliving $400–900/mo · Visa-free 30 days</div></button>
-      <button class="city-btn" data-city="2" onclick="selCity(2)"><div class="cn">Da Nang, Vietnam</div><div class="cr">Coliving $350–800/mo · Visa-free 45 days</div></button>
-      <button class="city-btn" data-city="3" onclick="selCity(3)"><div class="cn">Rio de Janeiro, Brazil</div><div class="cr">Coliving $700–1,500/mo · Visa-free 90 days</div></button>
-    </div>
-  </div>
+    function submitGate() {
+      var email = document.getElementById('email-input').value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('gate-err').style.display = 'block'; return;
+      }
+      var btn = document.getElementById('gate-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      var url = 'https://' + MAILCHIMP_SERVER + '.api.mailchimp.com/3.0/lists/' + MAILCHIMP_LIST_ID + '/members';
+      fetch('https://corsproxy.io/?' + encodeURIComponent(url), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'apikey ' + MAILCHIMP_API_KEY },
+        body: JSON.stringify({ email_address: email, status: 'subscribed', tags: ['coliving-calculator'] })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.status === 'subscribed' || d.id) { showOk("✓ You're in! Opening the calculator..."); }
+          else if (d.title === 'Member Exists') { showOk("✓ Already subscribed — opening the calculator!"); }
+          else { showOk("✓ Got it! Opening the calculator..."); }
+        })
+        .catch(function () { showOk("✓ Got it! Opening the calculator..."); });
+    }
 
-  <div class="card">
-    <div class="sec-title">Coliving style</div>
-    <div class="style-grid">
-      <button class="style-btn on" data-style="0" onclick="selStyle(0)"><div class="cn">Balanced</div><div class="cr">Community + focus, best of both</div></button>
-      <button class="style-btn" data-style="1" onclick="selStyle(1)"><div class="cn">Social</div><div class="cr">Events-heavy, vibrant community</div></button>
-      <button class="style-btn" data-style="2" onclick="selStyle(2)"><div class="cn">Focus</div><div class="cr">Quiet, deep work optimized</div></button>
-      <button class="style-btn" data-style="3" onclick="selStyle(3)"><div class="cn">Premium</div><div class="cr">Top-tier facilities, full service</div></button>
-    </div>
-  </div>
+    function showOk(msg) {
+      var el = document.getElementById('gate-ok');
+      el.textContent = msg; el.style.display = 'block';
+      var btn = document.getElementById('gate-btn');
+      btn.disabled = false; btn.textContent = 'Calculate for free';
+      setTimeout(openCalc, 900);
+    }
+    function openCalc() {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('calc').style.display = 'block';
+      update();
+    }
+    function selCity(i) {
+      cityIdx = i;
+      document.querySelectorAll('.city-btn').forEach(function (b) { b.classList.remove('on'); });
+      document.querySelector('[data-city="' + i + '"]').classList.add('on'); update();
+    }
+    function selStyle(i) {
+      styleChoice = i;
+      document.querySelectorAll('.style-btn').forEach(function (b) { b.classList.remove('on'); });
+      document.querySelector('[data-style="' + i + '"]').classList.add('on'); update();
+    }
+    function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
 
-  <div class="card" id="results">
-    <div class="sec-title">Your cost comparison</div>
-    <div class="compare-grid" id="compare-grid"></div>
-    <div class="verdict" id="verdict-box">
-      <div class="verdict-title" id="verdict-title"></div>
-      <div class="verdict-sub" id="verdict-sub"></div>
-    </div>
-    <div style="font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Monthly coliving cost breakdown</div>
-    <div class="breakdown" id="breakdown"></div>
-    <div class="totals">
-      <div class="total-card"><div class="total-label">Monthly coliving cost</div><div class="total-val" id="t-monthly"></div><div class="total-sub" id="t-monthly-sub"></div></div>
-      <div class="total-card"><div class="total-label">Total for stay</div><div class="total-val" id="t-total"></div><div class="total-sub" id="t-total-sub"></div></div>
-      <div class="total-card"><div class="total-label">vs. current life</div><div class="total-val" id="t-ratio"></div><div class="total-sub" id="t-ratio-sub"></div></div>
-    </div>
-    <div class="insight-list" id="insights"></div>
-  </div>
+    function update() {
+      var income = parseInt(document.getElementById('income').value);
+      var living = parseInt(document.getElementById('living').value);
+      var weeks = parseInt(document.getElementById('duration').value);
+      var months = weeks / 4.33;
+      var monthlyIncome = income / 12;
 
-  <div class="cta-box">
-    <div class="cta-title">Want me to find the right coliving<br>for this exact budget?</div>
-    <div class="cta-sub">I hand-pick 2–3 vetted coliving spaces based on your budget, style, and visa situation. Free consultation — no strings attached.</div>
-    <button class="cta-btn" onclick="window.open('https://instagram.com/chico_doyoon','_blank')">Book a free consultation →</button>
-  </div>
+      document.getElementById('income-val').textContent = '$' + income.toLocaleString();
+      document.getElementById('living-val').textContent = fmt(living);
+      document.getElementById('monthly-lbl').textContent = fmt(Math.round(monthlyIncome)) + '/mo';
+      document.getElementById('duration-val').textContent = weeks + ' week' + (weeks > 1 ? 's' : '') + ' (~' + months.toFixed(1) + ' months)';
 
-  <div class="footer">made with ♥ by a vetted coliving curator</div>
-</div>
-</div>
+      var c = cities[cityIdx];
+      var colivingBase = c.coliving[styleChoice];
+      var visaMonthly = c.visa / Math.max(months, 1);
+      var hiddenCost = Math.round((c.food + c.transport) * c.hiddenPct);
+      var monthly = colivingBase + c.food + c.transport + Math.round(visaMonthly) + c.misc + hiddenCost;
+      var totalColiving = monthly * months;
+      var totalCurrent = living * months;
+      var diff = living - monthly;
+      var ratio = monthly / monthlyIncome;
+      var budget20 = monthlyIncome * 0.20;
+      var budget30 = monthlyIncome * 0.30;
 
-<script>
-var MAILCHIMP_SERVER='us12';
-var MAILCHIMP_LIST_ID='b2de77e78a';
-var MAILCHIMP_API_KEY='acla000d541439dfae8ac98fd45cf3c1-us12';
+      document.getElementById('compare-grid').innerHTML =
+        '<div class="compare-col" style="background:#F1EFE8;color:#2C2C2A">' +
+        '<div class="compare-label">Your current life</div><div class="compare-city">Where you live now</div>' +
+        '<div class="compare-row"><span class="compare-row-label">Monthly expenses (all-in)</span><span class="compare-row-val">' + fmt(living) + '</span></div>' +
+        '<div class="compare-row"><span class="compare-row-label">Community</span><span class="compare-row-val">Not included</span></div>' +
+        '<div class="compare-row"><span class="compare-row-label">Coworking</span><span class="compare-row-val">Not included</span></div>' +
+        '<div class="compare-row"><span class="compare-row-label">' + weeks + '-week total</span><span class="compare-row-val">' + fmt(totalCurrent) + '</span></div>' +
+        '<div class="compare-total"><span class="compare-total-label">Per month</span><span class="compare-total-val">' + fmt(living) + '</span></div>' +
+        '</div>' +
+        '<div class="compare-col" style="background:#E1F5EE;color:#04342C">' +
+        '<div class="compare-label">' + c.flag + ' ' + c.name + '</div><div class="compare-city">' + ['Balanced', 'Social', 'Focus', 'Premium'][styleChoice] + ' coliving</div>' +
+        '<div class="compare-row"><span class="compare-row-label">Coliving (room + coworking + events)</span><span class="compare-row-val">' + fmt(colivingBase) + '</span></div>' +
+        '<div class="compare-row"><span class="compare-row-label">Food</span><span class="compare-row-val">' + fmt(c.food) + '</span></div>' +
+        '<div class="compare-row"><span class="compare-row-label">Transport + misc</span><span class="compare-row-val">' + fmt(c.transport + c.misc) + '</span></div>' +
+        '<div class="compare-row"><span class="compare-row-label">' + weeks + '-week total</span><span class="compare-row-val">' + fmt(totalColiving) + '</span></div>' +
+        '<div class="compare-total"><span class="compare-total-label">Per month</span><span class="compare-total-val">' + fmt(monthly) + '</span></div>' +
+        '</div>';
 
-var cities=[
-  {name:"Bali",flag:"🇮🇩",coliving:[750,950,620,1300],food:320,transport:75,visa:70,misc:90,hiddenPct:0.13},
-  {name:"Chiang Mai",flag:"🇹🇭",coliving:[480,650,400,850],food:230,transport:45,visa:40,misc:70,hiddenPct:0.12},
-  {name:"Da Nang",flag:"🇻🇳",coliving:[420,600,360,780],food:200,transport:38,visa:30,misc:60,hiddenPct:0.11},
-  {name:"Rio de Janeiro",flag:"🇧🇷",coliving:[780,1050,680,1400],food:380,transport:90,visa:0,misc:110,hiddenPct:0.15}
-];
-var cityIdx=0,styleChoice=0;
+      var vBg, vColor, vTitle, vSub;
+      if (diff > 200) {
+        vBg = '#E1F5EE'; vColor = '#085041';
+        vTitle = c.name + ' coliving saves you ' + fmt(diff) + ' every month';
+        vSub = 'Over ' + weeks + ' weeks, that\'s ' + fmt(Math.abs(totalCurrent - totalColiving)) + ' saved — with community, coworking, and events included.';
+      } else if (diff > -100) {
+        vBg = '#EEEDFE'; vColor = '#26215C';
+        vTitle = 'About the same cost — difference is just ' + fmt(Math.abs(diff)) + '/mo';
+        vSub = 'For a similar price, you get community, coworking space, and events included. The value is dramatically higher.';
+      } else if (diff > -400) {
+        vBg = '#FAEEDA'; vColor = '#412402';
+        vTitle = 'Coliving costs ' + fmt(Math.abs(diff)) + ' more per month';
+        vSub = 'That\'s ' + Math.round(ratio * 100) + '% of your monthly income. Factor in coworking savings and community ROI — it\'s likely worth it.';
+      } else {
+        vBg = '#FCEBEB'; vColor = '#501313';
+        vTitle = 'This combination is a stretch on your current income';
+        vSub = 'Try adjusting the city or style below — there\'s a setup that fits your budget.';
+      }
+      var vb = document.getElementById('verdict-box');
+      vb.style.background = vBg;
+      document.getElementById('verdict-title').style.color = vColor;
+      document.getElementById('verdict-title').textContent = vTitle;
+      document.getElementById('verdict-sub').style.color = vColor;
+      document.getElementById('verdict-sub').textContent = vSub;
 
-function clearMsg(){
-  document.getElementById('gate-err').style.display='none';
-  document.getElementById('gate-ok').style.display='none';
-}
+      var bItems = [
+        { label: 'Coliving (room + coworking + events)', val: colivingBase, color: '#1D9E75', max: 1400 },
+        { label: 'Food', val: c.food, color: '#534AB7', max: 500 },
+        { label: 'Transport', val: c.transport, color: '#BA7517', max: 120 },
+        { label: 'Visa (monthly estimate)', val: Math.round(visaMonthly), color: '#D4537E', max: 100 },
+        { label: 'Hidden costs estimate', val: hiddenCost, color: '#888', max: 120 },
+        { label: 'Misc', val: c.misc, color: '#D85A30', max: 150 }
+      ];
+      document.getElementById('breakdown').innerHTML = bItems.map(function (it) {
+        var pct = Math.min(Math.round(it.val / it.max * 100), 100);
+        return '<div class="brow"><span class="brow-label">' + it.label + '</span><div class="brow-bar"><div class="brow-fill" style="width:' + pct + '%;background:' + it.color + '"></div></div><span class="brow-val">' + fmt(it.val) + '</span></div>';
+      }).join('');
 
-function submitGate(){
-  var email=document.getElementById('email-input').value.trim();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    document.getElementById('gate-err').style.display='block';return;
-  }
-  var btn=document.getElementById('gate-btn');
-  btn.disabled=true;btn.textContent='Saving...';
-  var url='https://'+MAILCHIMP_SERVER+'.api.mailchimp.com/3.0/lists/'+MAILCHIMP_LIST_ID+'/members';
-  fetch('https://corsproxy.io/?'+encodeURIComponent(url),{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'apikey '+MAILCHIMP_API_KEY},
-    body:JSON.stringify({email_address:email,status:'subscribed',tags:['coliving-calculator']})
-  })
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(d.status==='subscribed'||d.id){showOk("✓ You're in! Opening the calculator...");}
-    else if(d.title==='Member Exists'){showOk("✓ Already subscribed — opening the calculator!");}
-    else{showOk("✓ Got it! Opening the calculator...");}
-  })
-  .catch(function(){showOk("✓ Got it! Opening the calculator...");});
-}
+      document.getElementById('t-monthly').textContent = fmt(monthly);
+      document.getElementById('t-monthly-sub').textContent = Math.round(ratio * 100) + '% of monthly income';
+      document.getElementById('t-total').textContent = fmt(totalColiving);
+      document.getElementById('t-total-sub').textContent = weeks + '-week total';
+      document.getElementById('t-ratio').textContent = (diff >= 0 ? '−' : '+') + '$' + Math.abs(Math.round(diff)).toLocaleString();
+      document.getElementById('t-ratio-sub').textContent = diff >= 0 ? 'cheaper than now' : 'more than now';
 
-function showOk(msg){
-  var el=document.getElementById('gate-ok');
-  el.textContent=msg;el.style.display='block';
-  var btn=document.getElementById('gate-btn');
-  btn.disabled=false;btn.textContent='Calculate for free';
-  setTimeout(openCalc,900);
-}
-function openCalc(){
-  document.getElementById('gate').style.display='none';
-  document.getElementById('calc').style.display='block';
-  update();
-}
-function selCity(i){
-  cityIdx=i;
-  document.querySelectorAll('.city-btn').forEach(function(b){b.classList.remove('on');});
-  document.querySelector('[data-city="'+i+'"]').classList.add('on');update();
-}
-function selStyle(i){
-  styleChoice=i;
-  document.querySelectorAll('.style-btn').forEach(function(b){b.classList.remove('on');});
-  document.querySelector('[data-style="'+i+'"]').classList.add('on');update();
-}
-function fmt(n){return '$'+Math.round(n).toLocaleString();}
-
-function update(){
-  var income=parseInt(document.getElementById('income').value);
-  var living=parseInt(document.getElementById('living').value);
-  var weeks=parseInt(document.getElementById('duration').value);
-  var months=weeks/4.33;
-  var monthlyIncome=income/12;
-
-  document.getElementById('income-val').textContent='$'+income.toLocaleString();
-  document.getElementById('living-val').textContent=fmt(living);
-  document.getElementById('monthly-lbl').textContent=fmt(Math.round(monthlyIncome))+'/mo';
-  document.getElementById('duration-val').textContent=weeks+' week'+(weeks>1?'s':'')+' (~'+months.toFixed(1)+' months)';
-
-  var c=cities[cityIdx];
-  var colivingBase=c.coliving[styleChoice];
-  var visaMonthly=c.visa/Math.max(months,1);
-  var hiddenCost=Math.round((c.food+c.transport)*c.hiddenPct);
-  var monthly=colivingBase+c.food+c.transport+Math.round(visaMonthly)+c.misc+hiddenCost;
-  var totalColiving=monthly*months;
-  var totalCurrent=living*months;
-  var diff=living-monthly;
-  var ratio=monthly/monthlyIncome;
-  var budget20=monthlyIncome*0.20;
-  var budget30=monthlyIncome*0.30;
-
-  document.getElementById('compare-grid').innerHTML=
-    '<div class="compare-col" style="background:#F1EFE8;color:#2C2C2A">'+
-      '<div class="compare-label">Your current life</div><div class="compare-city">Where you live now</div>'+
-      '<div class="compare-row"><span class="compare-row-label">Monthly expenses (all-in)</span><span class="compare-row-val">'+fmt(living)+'</span></div>'+
-      '<div class="compare-row"><span class="compare-row-label">Community</span><span class="compare-row-val">Not included</span></div>'+
-      '<div class="compare-row"><span class="compare-row-label">Coworking</span><span class="compare-row-val">Not included</span></div>'+
-      '<div class="compare-row"><span class="compare-row-label">'+weeks+'-week total</span><span class="compare-row-val">'+fmt(totalCurrent)+'</span></div>'+
-      '<div class="compare-total"><span class="compare-total-label">Per month</span><span class="compare-total-val">'+fmt(living)+'</span></div>'+
-    '</div>'+
-    '<div class="compare-col" style="background:#E1F5EE;color:#04342C">'+
-      '<div class="compare-label">'+c.flag+' '+c.name+'</div><div class="compare-city">'+['Balanced','Social','Focus','Premium'][styleChoice]+' coliving</div>'+
-      '<div class="compare-row"><span class="compare-row-label">Coliving (room + coworking + events)</span><span class="compare-row-val">'+fmt(colivingBase)+'</span></div>'+
-      '<div class="compare-row"><span class="compare-row-label">Food</span><span class="compare-row-val">'+fmt(c.food)+'</span></div>'+
-      '<div class="compare-row"><span class="compare-row-label">Transport + misc</span><span class="compare-row-val">'+fmt(c.transport+c.misc)+'</span></div>'+
-      '<div class="compare-row"><span class="compare-row-label">'+weeks+'-week total</span><span class="compare-row-val">'+fmt(totalColiving)+'</span></div>'+
-      '<div class="compare-total"><span class="compare-total-label">Per month</span><span class="compare-total-val">'+fmt(monthly)+'</span></div>'+
-    '</div>';
-
-  var vBg,vColor,vTitle,vSub;
-  if(diff>200){
-    vBg='#E1F5EE';vColor='#085041';
-    vTitle=c.name+' coliving saves you '+fmt(diff)+' every month';
-    vSub='Over '+weeks+' weeks, that\'s '+fmt(Math.abs(totalCurrent-totalColiving))+' saved — with community, coworking, and events included.';
-  } else if(diff>-100){
-    vBg='#EEEDFE';vColor='#26215C';
-    vTitle='About the same cost — difference is just '+fmt(Math.abs(diff))+'/mo';
-    vSub='For a similar price, you get community, coworking space, and events included. The value is dramatically higher.';
-  } else if(diff>-400){
-    vBg='#FAEEDA';vColor='#412402';
-    vTitle='Coliving costs '+fmt(Math.abs(diff))+' more per month';
-    vSub='That\'s '+Math.round(ratio*100)+'% of your monthly income. Factor in coworking savings and community ROI — it\'s likely worth it.';
-  } else {
-    vBg='#FCEBEB';vColor='#501313';
-    vTitle='This combination is a stretch on your current income';
-    vSub='Try adjusting the city or style below — there\'s a setup that fits your budget.';
-  }
-  var vb=document.getElementById('verdict-box');
-  vb.style.background=vBg;
-  document.getElementById('verdict-title').style.color=vColor;
-  document.getElementById('verdict-title').textContent=vTitle;
-  document.getElementById('verdict-sub').style.color=vColor;
-  document.getElementById('verdict-sub').textContent=vSub;
-
-  var bItems=[
-    {label:'Coliving (room + coworking + events)',val:colivingBase,color:'#1D9E75',max:1400},
-    {label:'Food',val:c.food,color:'#534AB7',max:500},
-    {label:'Transport',val:c.transport,color:'#BA7517',max:120},
-    {label:'Visa (monthly estimate)',val:Math.round(visaMonthly),color:'#D4537E',max:100},
-    {label:'Hidden costs estimate',val:hiddenCost,color:'#888',max:120},
-    {label:'Misc',val:c.misc,color:'#D85A30',max:150}
-  ];
-  document.getElementById('breakdown').innerHTML=bItems.map(function(it){
-    var pct=Math.min(Math.round(it.val/it.max*100),100);
-    return '<div class="brow"><span class="brow-label">'+it.label+'</span><div class="brow-bar"><div class="brow-fill" style="width:'+pct+'%;background:'+it.color+'"></div></div><span class="brow-val">'+fmt(it.val)+'</span></div>';
-  }).join('');
-
-  document.getElementById('t-monthly').textContent=fmt(monthly);
-  document.getElementById('t-monthly-sub').textContent=Math.round(ratio*100)+'% of monthly income';
-  document.getElementById('t-total').textContent=fmt(totalColiving);
-  document.getElementById('t-total-sub').textContent=weeks+'-week total';
-  document.getElementById('t-ratio').textContent=(diff>=0?'−':'+')+'$'+Math.abs(Math.round(diff)).toLocaleString();
-  document.getElementById('t-ratio-sub').textContent=diff>=0?'cheaper than now':'more than now';
-
-  var ins=[];
-  if(monthly<=budget20){
-    ins.push({t:'ig',s:'You\'re spending under 20% of your monthly income. You could comfortably upgrade to a higher style tier.'});
-  } else if(monthly<=budget30){
-    ins.push({t:'ig',s:'Right in the sweet spot — 20–30% of monthly income. Solid coliving without financial stress.'});
-  } else if(ratio>0.35){
-    var cheaper=cities.filter(function(x,i){return x.coliving[styleChoice]<colivingBase&&i!==cityIdx;});
-    if(cheaper.length>0){ins.push({t:'ia',s:'To reduce costs: '+cheaper.map(function(x){return x.name;}).join(' or ')+' runs '+fmt(colivingBase-cheaper[0].coliving[styleChoice])+'/mo cheaper for the same style.'});}
-  }
-  if(months>=2){ins.push({t:'ig',s:'Staying '+weeks+' weeks? You can typically negotiate a 10–15% long-stay discount — saving around '+fmt(Math.round(monthly*months*0.12))+' total.'});}
-  if(diff>=0){ins.push({t:'ig',s:'The coliving price includes a coworking space (usually $300–500/mo on its own). Factor that in and you\'re likely saving even more.'});}
-  if(c.visa>0){ins.push({t:'ia',s:'Visa cost of ~$'+c.visa+' is included in this estimate. Exact requirements vary by passport — verify before booking.'});}
-  document.getElementById('insights').innerHTML=ins.map(function(it){return '<div class="insight-item '+it.t+'">'+it.s+'</div>';}).join('');
-}
-</script>
+      var ins = [];
+      if (monthly <= budget20) {
+        ins.push({ t: 'ig', s: 'You\'re spending under 20% of your monthly income. You could comfortably upgrade to a higher style tier.' });
+      } else if (monthly <= budget30) {
+        ins.push({ t: 'ig', s: 'Right in the sweet spot — 20–30% of monthly income. Solid coliving without financial stress.' });
+      } else if (ratio > 0.35) {
+        var cheaper = cities.filter(function (x, i) { return x.coliving[styleChoice] < colivingBase && i !== cityIdx; });
+        if (cheaper.length > 0) { ins.push({ t: 'ia', s: 'To reduce costs: ' + cheaper.map(function (x) { return x.name; }).join(' or ') + ' runs ' + fmt(colivingBase - cheaper[0].coliving[styleChoice]) + '/mo cheaper for the same style.' }); }
+      }
+      if (months >= 2) { ins.push({ t: 'ig', s: 'Staying ' + weeks + ' weeks? You can typically negotiate a 10–15% long-stay discount — saving around ' + fmt(Math.round(monthly * months * 0.12)) + ' total.' }); }
+      if (diff >= 0) { ins.push({ t: 'ig', s: 'The coliving price includes a coworking space (usually $300–500/mo on its own). Factor that in and you\'re likely saving even more.' }); }
+      if (c.visa > 0) { ins.push({ t: 'ia', s: 'Visa cost of ~$' + c.visa + ' is included in this estimate. Exact requirements vary by passport — verify before booking.' }); }
+      document.getElementById('insights').innerHTML = ins.map(function (it) { return '<div class="insight-item ' + it.t + '">' + it.s + '</div>'; }).join('');
+    }
+  </script>
 </body>
+
 </html>
